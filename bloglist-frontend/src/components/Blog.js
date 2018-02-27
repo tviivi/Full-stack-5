@@ -39,6 +39,7 @@ class Blog extends React.Component {
           <li>
             added by "tähän käyttäjä // miten?"
     </li>
+    <button onClick>delete blog</button>
         </div>
       </div>
     )
