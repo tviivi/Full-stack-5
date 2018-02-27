@@ -15,7 +15,8 @@ class App extends React.Component {
       error: null,
       username: '',
       password: '',
-      user: null
+      user: null,
+      error: null
     }
   }
 
@@ -30,6 +31,13 @@ class App extends React.Component {
       this.setState({ user })
       blogService.setToken(user.token)
     }
+  }
+
+  notify = (error) => {
+    this.setState({ error })
+    setTimeout(() => {
+      this.setState({ error: null })
+    }, 5000)
   }
 
   addBlog = (event) => {
@@ -50,6 +58,7 @@ class App extends React.Component {
           author: '',
           url: ''
         })
+        this.notify(`a new blog with a title '${blogObject.title}' added`)
       })
   }
 
@@ -80,6 +89,7 @@ class App extends React.Component {
       this.setState({
         error: 'käyttäjätunnus tai salasana virheellinen',
       })
+      this.notify(`wrong username or password`)
       setTimeout(() => {
         this.setState({ error: null })
       }, 5000)
@@ -105,6 +115,7 @@ class App extends React.Component {
   render() {
     const loginForm = () => (
       <div>
+        <Notification message={this.state.error} />
         <h2>Log in to application:</h2>
 
         <form onSubmit={this.login}>
