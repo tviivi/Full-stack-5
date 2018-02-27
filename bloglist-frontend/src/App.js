@@ -4,6 +4,8 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
+import BlogForm from './components/BlogForm'
 
 class App extends React.Component {
   constructor(props) {
@@ -43,10 +45,12 @@ class App extends React.Component {
 
   addBlog = (event) => {
     event.preventDefault()
+    this.blogForm.toggleVisibility()
     const blogObject = {
       title: this.state.title,
       author: this.state.author,
-      url: this.state.url
+      url: this.state.url,
+      user: this.state.user.name
     }
     console.log(blogObject)
 
@@ -57,9 +61,10 @@ class App extends React.Component {
           blogs: this.state.blogs.concat(newBlog),
           title: '',
           author: '',
-          url: ''
+          url: '',
+          user: ''
         })
-        this.notify(`a new blog with a title '${blogObject.title}' added`)
+        this.notify(`a new blog with a title '${blogObject.title}' and a user ${blogObject.user} added`)
       })
   }
 
@@ -117,14 +122,14 @@ class App extends React.Component {
     const loginForm = () => {
       const hideWhenVisible = { display: this.state.loginVisible ? 'none' : '' }
       const showWhenVisible = { display: this.state.loginVisible ? '' : 'none' }
-    
+
       return (
         <div>
           <div style={hideWhenVisible}>
-            <button onClick={e => this.setState({ loginVisible: true })}>log in</button>
+            <button onClick={e => this.setState({ loginVisible: true })}>LOGIN</button>
           </div>
           <div style={showWhenVisible}>
-          <Notification message={this.state.error} />
+            <Notification message={this.state.error} />
             <LoginForm
               visible={this.state.visible}
               username={this.state.username}
@@ -132,60 +137,38 @@ class App extends React.Component {
               handleChange={this.handleLoginFieldChange}
               handleSubmit={this.login}
             />
-            <button onClick={e => this.setState({ loginVisible: false })}>cancel</button>
+            <button onClick={e => this.setState({ loginVisible: false })}>CANCEL</button>
           </div>
         </div>
       )
     }
 
-    const allBlogs = () => (
-      <div>
-        <div>
-          <h2>blogs</h2>
-          <Notification message={this.state.error} />
-          <p>{this.state.user.name} logged in <button onClick={this.logout}>LOGOUT</button></p>
-          {this.state.blogs.map(blog =>
-            <Blog key={blog._id} blog={blog} />)}
-        </div>
-
-        <div>
-          <h2>create new blog</h2>
-
-          <form onSubmit={this.addBlog}>
-            <div>
-              title <input
-                type="text"
-                name="title"
-                value={this.state.title}
-                onChange={this.handleBlogChange}
-              />
-            </div>
-            <div>
-              author <input
-                type="text"
-                name="author"
-                value={this.state.author}
-                onChange={this.handleBlogChange}
-              />
-            </div>
-            <div>
-              url <input
-                type="text"
-                name="url"
-                value={this.state.url}
-                onChange={this.handleBlogChange}
-              />
-            </div>
-            <button type="submit">create</button>
-          </form>
-        </div>
-      </div>
+    const blogForm = () => (
+      <Togglable buttonLabel="create a new blog" ref={component => this.blogForm = component}>
+        <BlogForm
+          onSubmit={this.addBlog}
+          title={this.state.title}
+          author={this.state.author}
+          url={this.state.url}
+          handleChange={this.handleBlogChange}
+        />
+      </Togglable>
     )
 
     return (
       <div>
         {this.state.user === null ?
-          loginForm() : allBlogs()
+          loginForm() :
+          <div>
+
+            <h2>blogs</h2>
+            <Notification message={this.state.error} />
+            <p>{this.state.user.name} logged in <button onClick={this.logout}>LOGOUT</button></p>
+            {this.state.blogs.map(blog =>
+              <Blog key={blog._id} blog={blog}/>)}
+
+            <div>{blogForm()}</div>
+          </div>
         }
       </div>
     )
