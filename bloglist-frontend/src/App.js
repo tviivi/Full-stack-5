@@ -6,6 +6,7 @@ import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
+import SimpleBlog from './components/SimpleBlog'
 
 class App extends React.Component {
   constructor(props) {
