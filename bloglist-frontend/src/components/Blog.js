@@ -24,11 +24,11 @@ class Blog extends React.Component {
     }
 
     return (
-      <div style={blogStyle}>
-        <div style={hideWhenVisible}>
+      <div style={blogStyle} className="wrapper">
+        <div style={hideWhenVisible} className="content">
         <button onClick={this.toggleVisibility}>{this.props.blog.title}</button> : {this.props.blog.author}
         </div>
-        <div style={showWhenVisible}>
+        <div style={showWhenVisible} className="othercontent">
         <button onClick={this.toggleVisibility}>{this.props.blog.title}</button> : {this.props.blog.author}
           <li>
             {this.props.blog.url}
